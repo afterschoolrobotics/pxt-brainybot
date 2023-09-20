@@ -1,7 +1,7 @@
 /**
  * Control an ASR Brainybot robot.
  */
-//% color=230 weight=50 icon="\uf067" block="Brainybot"
+//% color=230 weight=50 icon="\uf067" block="bb"
 namespace bb {
   const I2CADDR = 0x10;
   const ADC0_REGISTER = 0x1e;
