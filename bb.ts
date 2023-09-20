@@ -37,6 +37,14 @@ namespace bb {
     allBuffer[3] = MotorDir.Forward;
     allBuffer[4] = speed;
     pins.i2cWriteBuffer(I2CADDR, allBuffer);
+    basic.pause(duration * 1000);
+    let stopBuffer = pins.createBuffer(5);
+    stopBuffer[0] = LEFT_MOTOR_REGISTER;
+    stopBuffer[1] = MotorDir.Forward;
+    stopBuffer[2] = 0;
+    stopBuffer[3] = MotorDir.Forward;
+    stopBuffer[4] = 0;
+    pins.i2cWriteBuffer(I2CADDR, stopBuffer);
   }
 }
 
