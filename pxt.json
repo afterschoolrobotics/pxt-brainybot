@@ -8,7 +8,6 @@
         "microphone": "*"
     },
     "files": [
-        "bb.blocks",
         "bb.ts",
         "README.md"
     ],
