@@ -3,7 +3,7 @@
  */
 //% color=230 weight=50 icon="\uf067" block="Brainybot"
 namespace bb {
-  //% block="show|number %v"
+  //% block="Show|Number %v"
   export function showNumber(
     v: number,
     interval: number = 150
