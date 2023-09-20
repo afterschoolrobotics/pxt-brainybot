@@ -1,7 +1,7 @@
 /**
  * Control an ASR Brainybot robot.
  */
-//% color=230 weight=50 icon="\uf544" block="Brainybot"
+//% color=230 weight=50 icon="\uf067" block="Brainybot"
 namespace bb {
   //% block
   export function showNumber(
