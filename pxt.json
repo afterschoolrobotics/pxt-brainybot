@@ -8,8 +8,8 @@
         "microphone": "*"
     },
     "files": [
-        "main.blocks",
-        "main.ts",
+        "bb.blocks",
+        "bb.ts",
         "README.md"
     ],
     "testFiles": [
