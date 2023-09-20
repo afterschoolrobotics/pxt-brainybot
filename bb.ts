@@ -25,26 +25,36 @@ namespace bb {
     Backward,
   }
 
-  //% block="drive forwards|%duration seconds"
-  export function showNumber(
-    duration: number,
+  //% block="go forward for|%duration ms"
+  export function goForward(
+    duration: number = 1000,
     speed: number = 100
   ): void {
-    let allBuffer = pins.createBuffer(5);
-    allBuffer[0] = LEFT_MOTOR_REGISTER;
-    allBuffer[1] = MotorDir.Forward;
-    allBuffer[2] = speed;
-    allBuffer[3] = MotorDir.Forward;
-    allBuffer[4] = speed;
-    pins.i2cWriteBuffer(I2CADDR, allBuffer);
-    basic.pause(duration * 1000);
-    let stopBuffer = pins.createBuffer(5);
-    stopBuffer[0] = LEFT_MOTOR_REGISTER;
-    stopBuffer[1] = MotorDir.Forward;
-    stopBuffer[2] = 0;
-    stopBuffer[3] = MotorDir.Forward;
-    stopBuffer[4] = 0;
-    pins.i2cWriteBuffer(I2CADDR, stopBuffer);
+    internal.setMotors(
+      MotorDir.Forward,
+      speed,
+      MotorDir.Forward,
+      speed
+    );
+    basic.pause(duration);
+    internal.setMotors(MotorDir.Forward, 0, MotorDir.Forward, 0);
+  }
+
+  namespace internal {
+    export function setMotors(
+      leftDir: MotorDir,
+      leftSpeed: number,
+      rightDir: MotorDir,
+      rightSpeed: number
+    ): void {
+      let allBuffer = pins.createBuffer(5);
+      allBuffer[0] = LEFT_MOTOR_REGISTER;
+      allBuffer[1] = leftDir;
+      allBuffer[2] = leftSpeed;
+      allBuffer[3] = rightDir;
+      allBuffer[4] = rightSpeed;
+      pins.i2cWriteBuffer(I2CADDR, allBuffer);
+    }
   }
 }
 
