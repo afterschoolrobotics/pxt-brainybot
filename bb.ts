@@ -5,6 +5,13 @@
 namespace bb {
   const I2CADDR = 0x10;
   const MOTOR_SPEEDS_REGISTER = 0x00;
+  /*
+  const LINE_STATE_REGISTER = 0x1d;
+
+  const ULTRASONIC_TRIGGER_PIN = DigitalPin.P13;
+  const ULTRASONIC_ECHO_PIN = DigitalPin.P14;
+  const ULTRASONIC_PULSE_LENGTH = 29000;
+  */
 
   const FULL_SPEED_IPS = 8.5;
   const FULL_SPEED_DPS = 240;
@@ -22,8 +29,23 @@ namespace bb {
     //% block="backward"
     Backward,
   }
+  /*
+  //Line sensor selection
+  export enum MyEnumLineSensor {
+    //% block="L1"
+    SensorL1,
+    //% block="M"
+    SensorM,
+    //% block="R1"
+    SensorR1,
+    //% block="L2"
+    SensorL2,
+    //% block="R2"
+    SensorR2,
+  }
+  */
 
-  //% block="go forward|%dist inches"
+  //% block="go forward|%dist inches|at %speed speed"
   //% dist.min=0 dist.defl=12
   export function goForward(dist: number, speed: number = 100): void {
     let duration = internal.inchesToMsAtSpeed(dist, speed);
@@ -46,7 +68,7 @@ namespace bb {
     internal.setMotors(dir, 0, dir, 0);
   }
 
-  //% block="turn left|%deg degrees"
+  //% block="turn left|%deg degrees|at %speed speed"
   //% deg.min=0 deg.defl=90
   export function turnLeft(deg: number, speed: number = 100): void {
     let duration = internal.degreesToMsAtSpeed(deg, speed);
@@ -67,6 +89,69 @@ namespace bb {
     basic.pause(duration);
     internal.setMotors(leftDir, 0, rightDir, 0);
   }
+  /*
+  //% block="sense distance"
+  export function senseDistance(): number {
+    let data;
+    pins.digitalWritePin(ULTRASONIC_TRIGGER_PIN, 1);
+    basic.pause(1);
+    pins.digitalWritePin(ULTRASONIC_TRIGGER_PIN, 0);
+    if (pins.digitalReadPin(ULTRASONIC_ECHO_PIN) == 0) {
+      pins.digitalWritePin(ULTRASONIC_TRIGGER_PIN, 0);
+      pins.digitalWritePin(ULTRASONIC_TRIGGER_PIN, 1);
+      basic.pause(20);
+      pins.digitalWritePin(ULTRASONIC_TRIGGER_PIN, 0);
+      data = pins.pulseIn(
+        ULTRASONIC_ECHO_PIN,
+        PulseValue.High,
+        ULTRASONIC_PULSE_LENGTH
+      );
+    } else {
+      pins.digitalWritePin(ULTRASONIC_TRIGGER_PIN, 1);
+      pins.digitalWritePin(ULTRASONIC_TRIGGER_PIN, 0);
+      basic.pause(20);
+      pins.digitalWritePin(ULTRASONIC_TRIGGER_PIN, 0);
+      data = pins.pulseIn(
+        ULTRASONIC_ECHO_PIN,
+        PulseValue.High,
+        ULTRASONIC_PULSE_LENGTH
+      );
+    }
+    data = data / 59;
+    if (data <= 0) return 0;
+    if (data > 500) return 500;
+    return Math.round(data);
+  }
+
+  //% block="ground sensor %eline"
+  export function groundSensor(eline: MyEnumLineSensor): number {
+    pins.i2cWriteNumber(
+      I2CADDR,
+      LINE_STATE_REGISTER,
+      NumberFormat.Int8LE
+    );
+    let data = pins.i2cReadNumber(I2CADDR, NumberFormat.Int8LE);
+    let state;
+    switch (eline) {
+      case MyEnumLineSensor.SensorL1:
+        state = (data & 0x08) == 0x08 ? 1 : 0;
+        break;
+      case MyEnumLineSensor.SensorM:
+        state = (data & 0x04) == 0x04 ? 1 : 0;
+        break;
+      case MyEnumLineSensor.SensorR1:
+        state = (data & 0x02) == 0x02 ? 1 : 0;
+        break;
+      case MyEnumLineSensor.SensorL2:
+        state = (data & 0x10) == 0x10 ? 1 : 0;
+        break;
+      default:
+        state = (data & 0x01) == 0x01 ? 1 : 0;
+        break;
+    }
+    return state;
+  }
+  */
 
   namespace internal {
     export function setMotors(
